@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "django-session-refresh"
+version = "0.1.0"
+authors = [
+  { name="Anderson Lima", email="amilnosredna@gmail.com" },
+]
+description = "A simple Django middleware to refresh user sessions periodically to prevent timeout during active use"
+keywords = [
+    "django",
+    "session",
+    "refresh",
+]
+classifiers = [
+    "Framework :: Django :: 5",
+    "Programming Language :: Python :: 3",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache 2.0 License",
+    "Operating System :: OS Independent",
+]
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "django>=5.0",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/amilnosredna/django-session-refresh"
