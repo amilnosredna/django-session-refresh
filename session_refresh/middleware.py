@@ -13,21 +13,24 @@ class SessionRefreshMiddleware:
     Configuration options (can be set in Django settings):
     - SESSION_REFRESH_KEY: The session key to store the last refresh timestamp. Default is 'last_session_refresh'.
     - SESSION_REFRESH_INTERVAL: The interval in seconds to refresh the session. Default is 86400 (24 hours).
-    - SESSION_REFRESH_SKIP_ADMIN_USERS: If True, skips session refresh for admin users. Default is True.
+    - SESSION_REFRESH_SKIP_STAFF_USERS: If True, skips session refresh for is_staff users. Default is False.
+    - SESSION_REFRESH_SKIP_SUPERUSER_USERS: If True, skips session refresh for is_superuser users. Default is True.
     - SESSION_REFRESH_SKIP_STATIC_AND_MEDIA: If True, skips session refresh for static and media file requests. Default is True.
     - SESSION_REFRESH_SKIP_UNAUTHENTICATED_USERS: If True, skips session refresh for unauthenticated users. Default is True.
     """
 
     _SESSION_REFRESH_KEY = "last_session_refresh"
     _SESSION_REFRESH_INTERVAL = 86400  # 24 hours in seconds
-    _SESSION_REFRESH_SKIP_ADMIN_USERS = True
+    _SESSION_REFRESH_SKIP_STAFF_USERS = False
+    _SESSION_REFRESH_SKIP_SUPERUSER_USERS = True
     _SESSION_REFRESH_SKIP_STATIC_AND_MEDIA = True
     _SESSION_REFRESH_SKIP_UNAUTHENTICATED_USERS = True
 
     def __init__(self, get_response):
         self._SESSION_REFRESH_KEY = getattr(settings, "SESSION_REFRESH_KEY", self._SESSION_REFRESH_KEY)
         self._SESSION_REFRESH_INTERVAL = getattr(settings, "SESSION_REFRESH_INTERVAL", self._SESSION_REFRESH_INTERVAL)
-        self._SESSION_REFRESH_SKIP_ADMIN_USERS = getattr(settings, "SESSION_REFRESH_SKIP_ADMIN_USERS", self._SESSION_REFRESH_SKIP_ADMIN_USERS)
+        self._SESSION_REFRESH_SKIP_STAFF_USERS = getattr(settings, "SESSION_REFRESH_SKIP_STAFF_USERS", self._SESSION_REFRESH_SKIP_STAFF_USERS)
+        self._SESSION_REFRESH_SKIP_SUPERUSER_USERS = getattr(settings, "SESSION_REFRESH_SKIP_SUPERUSER_USERS", self._SESSION_REFRESH_SKIP_SUPERUSER_USERS)
         self._SESSION_REFRESH_SKIP_STATIC_AND_MEDIA = getattr(settings, "SESSION_REFRESH_SKIP_STATIC_AND_MEDIA", self._SESSION_REFRESH_SKIP_STATIC_AND_MEDIA)
         self._SESSION_REFRESH_SKIP_UNAUTHENTICATED_USERS = getattr(settings, "SESSION_REFRESH_SKIP_UNAUTHENTICATED_USERS", self._SESSION_REFRESH_SKIP_UNAUTHENTICATED_USERS)
 
@@ -69,7 +72,9 @@ class SessionRefreshMiddleware:
         user = getattr(request, "user", None)
         if self._SESSION_REFRESH_SKIP_UNAUTHENTICATED_USERS and not getattr(user, "is_authenticated", False):
             return True
-        if self._SESSION_REFRESH_SKIP_ADMIN_USERS and getattr(user, "is_staff", False):
+        if self._SESSION_REFRESH_SKIP_SUPERUSER_USERS and getattr(user, "is_superuser", False):
+            return True
+        if self._SESSION_REFRESH_SKIP_STAFF_USERS and getattr(user, "is_staff", False):
             return True
         return False
 

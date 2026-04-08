@@ -29,8 +29,12 @@ SESSION_REFRESH_INTERVAL = 86400  # 24 hours
 SESSION_REFRESH_KEY = 'last_session_refresh'
 ```
 ```python
-# Skips session refresh for admin users
-SESSION_REFRESH_SKIP_ADMIN_USERS = True
+# Skips session refresh for is_staff users
+SESSION_REFRESH_SKIP_STAFF_USERS = False
+```
+```python
+# Skips session refresh for is_superuser users
+SESSION_REFRESH_SKIP_SUPERUSER_USERS = True
 ```
 ```python
 # Skips session refresh for static and media file requests
